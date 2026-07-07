@@ -1,0 +1,22 @@
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
+WORKDIR /src
+
+COPY src/gateway/dotnet/gateway-dotnet.csproj .
+RUN dotnet restore gateway-dotnet.csproj
+
+COPY src/gateway/dotnet/ .
+RUN dotnet publish gateway-dotnet.csproj -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+
+WORKDIR /app
+
+COPY --from=build /app/publish .
+
+EXPOSE 8002
+
+ENV ASPNETCORE_URLS=http://+:8002
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+ENTRYPOINT ["dotnet", "gateway-dotnet.dll"]

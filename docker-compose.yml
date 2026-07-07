@@ -1,0 +1,72 @@
+version: "3.9"
+
+services:
+  compliance-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    ports:
+      - "8001:8001"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://fintech:fintech_pass@postgres:5432/compliance_db
+    env_file:
+      - ../.env
+    depends_on:
+      - redis
+      - postgres
+    networks:
+      - compliance-net
+    restart: unless-stopped
+
+  compliance-gateway-dotnet:
+    build:
+      context: .
+      dockerfile: Dockerfile.dotnet
+    ports:
+      - "8002:8002"
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=postgresql://fintech:fintech_pass@postgres:5432/compliance_db
+      - PYTHON_GATEWAY_URL=http://compliance-gateway:8001
+    env_file:
+      - ../.env
+    depends_on:
+      - redis
+      - postgres
+      - compliance-gateway
+    networks:
+      - compliance-net
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - compliance-net
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: fintech
+      POSTGRES_PASSWORD: fintech_pass
+      POSTGRES_DB: compliance_db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - compliance-net
+    restart: unless-stopped
+
+networks:
+  compliance-net:
+    driver: bridge
+
+volumes:
+  redis_data:
+  pg_data:

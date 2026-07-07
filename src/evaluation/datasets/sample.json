@@ -1,0 +1,58 @@
+[
+  {
+    "id": "comp-001",
+    "question": "Verify identity: John Smith, DOB 1985-03-12, Passport USA #C12345678, Address 123 Main St New York NY. No sanctions flags.",
+    "expected_keywords": ["identity verified", "passport", "no sanctions match", "low risk", "PASS", "document valid"],
+    "expected_disposition": "PASS",
+    "min_score": 3.0
+  },
+  {
+    "id": "comp-002",
+    "question": "Screen entity 'Global Trade Corp' registered in Panama, beneficial owner appears on OFAC SDN list under alias 'Carlos Mendoza'. Transaction pattern shows multiple $9,900 transfers.",
+    "expected_keywords": ["sanctions match", "OFAC SDN", "STRUCTURING", "high risk", "ESCALATE", "freeze", "SAR", "compliance officer"],
+    "expected_disposition": "ESCALATE",
+    "min_score": 3.0
+  },
+  {
+    "id": "comp-003",
+    "question": "KYC check for Maria Garcia, DOB 1990-07-22. Address matches utility bill but name on passport has slight difference: 'Maria GARCIA-Lopez' vs application 'Maria Garcia'. No sanctions hits. PEP check negative. Standard US jurisdiction.",
+    "expected_keywords": ["name mismatch", "manual review", "medium risk", "document", "discrepancy", "FLAGGED"],
+    "expected_disposition": "FLAGGED",
+    "min_score": 3.0
+  },
+  {
+    "id": "comp-004",
+    "question": "Transaction monitoring alert: Account #US-192837 received $500,000 wire from high-risk jurisdiction (Cayman Islands). Source entity not on sanctions lists but PEP database shows beneficial owner is sitting government official in origin country.",
+    "expected_keywords": ["PEP", "high-risk jurisdiction", "Cayman Islands", "enhanced due diligence", "ESCALATE", "source of funds", "compliance officer"],
+    "expected_disposition": "ESCALATE",
+    "min_score": 3.0
+  },
+  {
+    "id": "comp-005",
+    "question": "Standard onboarding: Acme LLC, US-based tech startup, all beneficial owners US citizens with clean background checks. No adverse media. No sanctions. Low-value transactions only.",
+    "expected_keywords": ["low risk", "PASS", "auto-approve", "standard onboarding", "no flags", "clean"],
+    "expected_disposition": "PASS",
+    "min_score": 3.0
+  },
+  {
+    "id": "comp-006",
+    "question": "Fraud alert: Application for 'Robert Johnson' uses SSN belonging to deceased individual per Social Security Death Master File. IP geolocation shows Nigeria but claimed residence is Texas. Device fingerprint matches known fraud ring.",
+    "expected_keywords": ["synthetic identity", "fraud ring", "SSN mismatch", "deceased", "geolocation", "ESCALATE", "high risk", "block"],
+    "expected_disposition": "ESCALATE",
+    "min_score": 3.0
+  },
+  {
+    "id": "comp-007",
+    "question": "EU customer onboarding for GDPR-covered entity. Customer requests account deletion per right-to-erasure. No active transactions, no legal holds, no open investigations.",
+    "expected_keywords": ["GDPR", "right to erasure", "data deletion", "compliance", "PASS", "audit trail", "retention schedule"],
+    "expected_disposition": "PASS",
+    "min_score": 3.0
+  },
+  {
+    "id": "comp-008",
+    "question": "Screening result: Subject name partial match (92% fuzzy) to UN sanctions list entry 'Ahmed Al-Rashid' but DOB, nationality, and passport number DO NOT match. Current subject is UK citizen with no adverse media.",
+    "expected_keywords": ["false positive", "fuzzy match", "manual review", "medium risk", "name match only", "discrepant identifiers", "FLAGGED"],
+    "expected_disposition": "FLAGGED",
+    "min_score": 3.0
+  }
+]
